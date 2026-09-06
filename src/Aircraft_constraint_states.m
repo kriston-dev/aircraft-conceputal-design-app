@@ -1,6 +1,6 @@
 %Created by Kriston Rickman
 %Date created 09/03/26
-%v1_05 for Energy based constraint analysis v1_31
+%v1_06 for Energy based constraint analysis v1_32
 %States 
 %Notes: 
 
@@ -16,6 +16,8 @@ classdef Aircraft_constraint_states
         CALCULATE_TW
         GRAPH_TW
         GRAPH_TW_FROM_USER_TW_DATA_CALCULATION
+        GET_TS_AIRCRAFT_DATA
+        CALCULATE_TS
         ERROR_STATE %need to create
     end
 end
