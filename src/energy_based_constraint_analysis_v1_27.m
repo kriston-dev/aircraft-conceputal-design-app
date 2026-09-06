@@ -1,6 +1,6 @@
 %Created by Kriston Rickman
 %Date created 07/06/26
-%V1.26
+%V1.27
 %Energy based constraint analysis
 %Note:
 
