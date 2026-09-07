@@ -2,28 +2,10 @@ Created by Kriston Rickman
 
 09/01/26
 
-Updated from V1.30
+Updated from V1.35
 
 
-1. Calculate stability/trim:
-   
-   tail volume constraint
-   
-   tail moment arm
-   
-   tail horizontal area
-   
-   vertical stabilaer area
-   
-   User inputs: AR for vert. and horiz. stabilizer and their taper ratio
-   
-   stabilizer span
-   
-   find tip chord
-   
-   continuation in docs...
-
-   Taper ratio for wing
+1. Going to test the:
 
    Neutral point location
 
@@ -37,14 +19,15 @@ Updated from V1.30
 
    Performance Verification
 
-   Limit load
+   Limit load factor
+
+   ultimate load factor
 
    Wing bending moment
 
-   Gust loads
-
    Landing gear vertical loads
 
+   Gust loads
    
 
 1.5  Based on all data find Thrust to weight ratio. Change formulas and remove assumptions as much as possible for most 
