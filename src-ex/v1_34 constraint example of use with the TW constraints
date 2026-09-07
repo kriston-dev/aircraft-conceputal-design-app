@@ -42,3 +42,6 @@ user_TW_aircraft.mat in the src folder then here is what I used:
 Some of these values were found based on my own Aircraft requirement document, United States Air Force Stability and Control
 Digital DATCOM, and searched online about the Cirrus SR 20. I personally was aiming for a somewhat similar design to a known
 aircraft that operates well.
+
+Note: The first commit message I created of this had an error of its velocity. Once I realized that the knots were being shown in 
+meters per second, i changed and updated the program to fix this issue in v1_36.
