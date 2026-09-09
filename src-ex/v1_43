@@ -1,0 +1,27 @@
+For example how to use the stability/trim function, based on my T/W constraint, I chose for my stability/trim:
+
+  Wing area: 8.2000
+
+  Horizontal tail volume coefficient: 0.6300
+
+  Vertical tail volume coefficient: 0.0360
+
+  Cockpit radius: 0.6300
+
+  Fuselage radius near tail: 0.3000
+
+  Aspect Ratio Horizontal Stabilizer: 4
+
+  Aspect Ratio Vertical Stabilizer: 1.8000
+
+  Taper Ratio: 0.5000
+
+  tail efficiency: 0.9000
+  
+  The tail efficiency tells the program of how well the horizontal stabilizer produce those forces when being compared to the 
+  
+  reference of the air flow. Highera the number between 0 to 1, the better the stability because of how well the horizontal 
+  
+  tail helps the pitching moment and the neutral point.
+
+The results from this gave me 
