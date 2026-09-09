@@ -24,7 +24,7 @@ constraint, I chose for my stability/trim:
   
   The tail efficiency tells the program of how well the horizontal stabilizer produce those forces when being compared to the 
   
-  reference of the air flow. Highera the number between 0 to 1, the better the stability because of how well the horizontal 
+  reference of the air flow. Higher a the number between 0 to 1, the better the stability because of how well the horizontal 
   
   tail helps the pitching moment and the neutral point.
 
