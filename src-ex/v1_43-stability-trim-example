@@ -1,0 +1,51 @@
+I wanted to make sure that the stability/trim can only be done under that specific saved file because, there needs to be a
+
+general idea of what the plan of this aircraft needs to go to calculate the stability/trim. For example, based on my T/W 
+
+constraint, I chose for my stability/trim:
+
+  Wing area: 8.2000 (I chose this point above all the T/W constraints)
+
+  Horizontal tail volume coefficient: 0.6300
+
+  Vertical tail volume coefficient: 0.0360
+
+  Cockpit radius: 0.6300
+
+  Fuselage radius near tail: 0.3000
+
+  Aspect Ratio Horizontal Stabilizer: 4
+
+  Aspect Ratio Vertical Stabilizer: 1.8000
+
+  Taper Ratio: 0.5000
+
+  tail efficiency: 0.9000
+  
+  The tail efficiency tells the program of how well the horizontal stabilizer produce those forces when being compared to the 
+  
+  reference of the air flow. Highera the number between 0 to 1, the better the stability because of how well the horizontal 
+  
+  tail helps the pitching moment and the neutral point.
+
+The results from this gave me:
+
+  Tail moment arm: 2.2716
+  
+  Horizontal stabilizer wing area: 2.1488
+  
+  Horizontal stabilizer span: 2.9318
+  
+  Vertical stabilizer wing area: 1.1696
+  
+  Vertical stabilizer span: 1.451
+  
+  reference wing root chord: 1.2148
+  
+  reference wing tip chord: 0.60741
+  
+  Neutral location located at: 3.2118
+
+The idea is that the user's inputs are a given set of requirements that are needed of the aircraft and then add in what the 
+
+customer requests. 
