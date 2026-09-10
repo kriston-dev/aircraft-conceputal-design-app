@@ -437,7 +437,7 @@ user_aircraft_TW_input.rho_TO = ...
     altitude_find_rho(user_aircraft_TW_input.altitude_TO);
 
     %Velocity formulas
-Velocity_stall = sqrt((2 .* Weight_TO) ./ (user_aircraft_TW_input.rho_TO .*...
+Velocity_stall = sqrt((2 .* TW.Weight_TO) ./ (user_aircraft_TW_input.rho_TO .*...
     user_aircraft_TW_input.Wing_area .* user_aircraft_TW_input.C_Lmax_TO));
 
 Velocity_TO = user_aircraft_TW_input.K_TO * Velocity_stall;
@@ -1711,7 +1711,9 @@ disp(" ");
 user_loads_aircraft_input.C_M_AC_TO = input("During takeoff, what is the reference wing " + ...
     "pitching moment coefficient: ");
 
-user_loads_aircraft_input.tail_incidence = deg2rad(input("The tail incidence (deg): "));
+user_loads_aircraft_input.tail_incidence = input("The tail incidence (deg): ");
+
+user_loads_aircraft_input.wing_incidence = input("The wing incidence (deg): ");
 
 user_loads_aircraft_input.max_elevator_up = input("The max the elevator can" + ...
     " move up: ");
@@ -1719,11 +1721,20 @@ user_loads_aircraft_input.max_elevator_up = input("The max the elevator can" + .
 user_loads_aircraft_input.elevator_efficiency = input("The efficiency of the" + ...
     " elevator (0 to 1): ");
 
-user_loads_aircraft_input.alpha_L0_wing = deg2rad(input("Enter the wing " + ...
-    " + zero-lift angle of attack from DATCOM (deg): "));
+user_loads_aircraft_input.alpha_L0_wing = input("Enter the wing " + ...
+    " + zero-lift angle of attack from DATCOM (deg): ");
 
-user_loads_aircraft_input.AoA_L0_HS = deg2rad(input( ...
-    "Enter the horizontal tail zero-lift angle of attack from DATCOM (deg): "));
+user_loads_aircraft_input.AoA_L0_HS = input( ...
+    "Enter the horizontal tail zero-lift angle of attack from DATCOM (deg): ");
+
+user_loads_aircraft_input.C_L_AoA_TO = input( ...
+    "Enter the CLA at the takeoff AoA from DATCOM: ");
+
+user_loads_aircraft_input.C_M_AoA_TO = input( ...
+    "Enter the CMA at the takeoff AoA from DATCOM: ");
+
+user_loads_aircraft_input.downwash_TO = ...
+    input("enter EPSLON from the takeoff AoA from DATCOM (deg)");
 
 end
 
@@ -1781,16 +1792,29 @@ loads.X_CG = sum(initial_masses .* X_components) ./ total_mass;
 
 
 %Static margin
-loads.static_margin = (ST.X_NP - loads.X_CG) ./ ST.MAC_ref;
+loads.static_margin = -user_loads_aircraft_input.C_M_AoA_TO ./ ...
+    user_loads_aircraft_input.C_L_AoA_TO;
+
+%Neautral point ()
+loads.X_NP = loads.X_CG + loads.static_margin .* ST.MAC_ref;
 
 %AFT CG limit
 %in my notes I have the static margin as the minimum and will need to find
 %values that representt our aircraft. 
-loads.AFT_X_CG = ST.X_NP - user_loads_aircraft_input.min_static_margin .* ST.MAC_ref;
+loads.AFT_X_CG = loads.X_NP - user_loads_aircraft_input.min_static_margin .* ST.MAC_ref;
 
-%Foward CG limit
 
-%sub formula
+downwash_TO = deg2rad( ...
+    user_loads_aircraft_input.downwash_TO);
+
+AoA_L0_ref_wing = deg2rad(user_loads_aircraft_input.alpha_L0_wing);
+
+AoA_L0_HS = deg2rad(user_loads_aircraft_input.AoA_L0_HS);
+
+tail_incidence = deg2rad(user_loads_aircraft_input.tail_incidence);
+
+wing_incidence = deg2rad(user_loads_aircraft_input.wing_incidence);
+
 
 
 loads.wing_pitching_moment = user_loads_aircraft_input.C_M_AC_TO.* TW.q_TO .* ...
@@ -1802,7 +1826,7 @@ X_tail_AC = ST.X_AC + ST.Tail_moment_arm;
 
 %I realized its better to defvleop the lift coefficient from the tail AoA
 %and elevator deflection rather than asking the user because this can cause
-%inconsistencies in the values of the geometry, downash, and the elevator
+%inconsistencies in the values of the geometry, downwash, and the elevator
 %position.
 
 %tells us how much the horizontal stabilier lift coeff changes when the AoA
@@ -1826,25 +1850,24 @@ for updated_tail_force = 1:100
     C_L_ref_wing = wing_ref_lift_required_TO ./ ...
         (TW.q_TO .* user_ST_aircraft_input.Wing_area);
     
+    AoA_wing_TO = AoA_L0_ref_wing + ...
+    C_L_ref_wing ./ wing_lift_curve_slope;
+
     %The AoA that is required to takeoff
-    AoA_TO = user_loads_aircraft_input.alpha_L0_wing + C_L_ref_wing ./ ...
-        wing_lift_curve_slope;
+    AoA_TO = AoA_wing_TO - wing_incidence;
     
     %How strong the angle of the wings downwash changes which is the turning of
     %the airflow behind the wing
-    downwash_gradient = (2 .* ST.wing_lift_curve_slope) ./ (pi .* ST.wing_AR_ref);
-    
-    downwash_TO = downwash_gradient .* (AoA_TO - user_loads_aircraft_input.alpha_L0_wing);
     
     %The AoA the horizontal stabilizer is experiencing
-    AoA_HS = AoA_TO + user_loads_aircraft_input.tail_incidence - downwash_TO;
+    AoA_HS = AoA_TO + tail_incidence - downwash_TO;
     
     %elevator angle we test the forward cg limit
     delta_e_forward_CG = -deg2rad(user_loads_aircraft_input.max_elevator_up);
     
     %The lift coeff for the forward CG when calculating the downard tial force
     C_L_tail_forward = tail_lift_curve_slope .* ...
-        (AoA_HS - user_loads_aircraft_input.AoA_L0_HS + ...
+        (AoA_HS - AoA_L0_HS + ...
         user_loads_aircraft_input.elevator_efficiency .* delta_e_forward_CG);
     
     %
@@ -1855,6 +1878,8 @@ for updated_tail_force = 1:100
         break
     end
 end
+
+wing_ref_lift_required_TO = TW.Weight_TO - tail_force;
 
 %FOR. CG limit calculation
 loads.forward_X_CG = (ST.X_AC .* wing_ref_lift_required_TO + ...
@@ -2161,8 +2186,8 @@ switch user_choice
             "the reference wing pitching moment coefficient: ");
 
     case 33
-        user_loads_aircraft_input.tail_incidence = deg2rad(input( ...
-            "The tail incidence (deg): "));
+        user_loads_aircraft_input.tail_incidence = input( ...
+            "The tail incidence (deg): ");
 
     case 34
         user_loads_aircraft_input.max_elevator_up = input("The max the " + ...
@@ -2173,12 +2198,12 @@ switch user_choice
             "The efficiency of the elevator (0 to 1): ");
 
     case 36
-        user_loads_aircraft_input.alpha_L0_wing = deg2rad(input( ...
-            "Enter the wing zero-lift angle of attack from DATCOM (deg): "));
+        user_loads_aircraft_input.alpha_L0_wing = input( ...
+            "Enter the wing zero-lift angle of attack from DATCOM (deg): ");
 
     case 37
-        user_loads_aircraft_input.AoA_L0_HS = deg2rad(input( ...
-            "Enter the horizontal tail zero-lift angle of attack from DATCOM (deg): "));
+        user_loads_aircraft_input.AoA_L0_HS = input( ...
+            "Enter the horizontal tail zero-lift angle of attack from DATCOM (deg): ");
 
     otherwise
         disp("Invalid choice");
