@@ -1,0 +1,47 @@
+This picture is based off my desired wants of an aircraft that resembled the Cirrus Sr 20. An example that was chosen is
+close to the wing loading of a Cirrus SR 20 and my T/W is exceptional for an aircraft. The results from personal calculation
+I ended up with the wing area reference being 8.2 m^2, the mass during takeoff after burning 1 gallon of fuel is 865.84 kg, 
+and the required thrust for this design is 1596.85 newton. If my aircraft inputs are not available to be shown from the 
+user_TW_aircraft.mat in the src folder then here is what I used:
+                 Engine_power_HP: 230
+                            Span: 9
+                   Wing_area_raw: 8
+                     Sweep_angle: 3
+          Mass_without_wing_skin: 780
+           Wing_material_density: 2700
+             Wing_skin_thickness: 0.0020
+                          C_Dmin: 0.0270
+                          C_Lmin: 0.3000
+                       C_Lmax_TO: 1.7000
+                             S_G: 502.9200
+                            K_TO: 1.2000
+    Rolling_friction_coefficient: 0.0300
+         Propeller_efficiency_TO: 0.7500
+                     altitude_TO: 0
+         Fuel_spent_ground_to_TO: 1
+            Fuel_mass_per_gallon: 2.7200
+                   rate_of_climb: 3.9700
+                  velocity_climb: 96
+                  altitude_climb: 0
+                 velocity_cruise: 155
+                 altitude_cruise: 5000
+                     radius_turn: 300
+                   altitude_turn: 1000
+                     C_Lmax_turn: 1.3800
+                          K_turn: 1.3000
+                  velocity_accel: 120
+                     accel_horiz: 0.6000
+            altitude_horiz_accel: 2438
+               velocity_approach: 78
+                      K_approach: 1.3000
+                 C_Lmax_approach: 1.7900
+               altitude_approach: 0
+                 Wing_area_final: 16
+                       Wing_area: [8 8.1000 8.2000 8.3000 8.4000 8.5000 … ] (1×81 double)
+
+Some of these values were found based on my own Aircraft requirement document, United States Air Force Stability and Control
+Digital DATCOM, and searched online about the Cirrus SR 20. I personally was aiming for a somewhat similar design to a known
+aircraft that operates well.
+
+Note: The first commit message I created of this had an error of its velocity. Once I realized that the knots were being shown in 
+meters per second, i changed and updated the program to fix this issue in v1_36.

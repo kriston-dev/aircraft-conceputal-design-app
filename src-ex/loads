@@ -1,0 +1,5 @@
+My inputs are:
+
+pitching moment coefficient = -0.081 From DATCOM, I interpolated the AoA of 8 degree to 10 degree due to our required lift 
+
+coefficient found between those values as well.
