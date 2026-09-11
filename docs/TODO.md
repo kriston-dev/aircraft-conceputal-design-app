@@ -5,32 +5,7 @@ Created by Kriston Rickman
 Updated from V1.35
 
 
-1. Going to test the:
-
-   Neutral point location
-
-   static margin
-
-   AFT CG limit
-
-   Forward CG limit
-
-   CG range
-
-   Performance Verification
-
-   Limit load factor
-
-   ultimate load factor
-
-   Wing bending moment
-
-   Landing gear vertical loads
-
-   Gust loads
-   
-
-1.5  Based on all data find Thrust to weight ratio. Change formulas and remove assumptions as much as possible for most 
+1. Based on all data find Thrust to weight ratio. Change formulas and remove assumptions as much as possible for most 
 
 accuracy.
 
