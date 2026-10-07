@@ -8,5 +8,6 @@ public class TWDataInputController {
     @FXML
     private void handleTWGraph() throws IOException {
         App.setRoot("NaN");
+        System.out.println("T/W Graph button pressed");
     }
 }

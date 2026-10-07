@@ -5,9 +5,9 @@ public class DatcomWrapper {
     public void runDatcom() {
 
         /*
-        This will create the datcom input, run DATCOM,
-        read the output, and then parse the results.
+         * This will create the datcom input, run DATCOM,
+         * read the output, and then parse the results.
          */
     }
-    
+
 }
