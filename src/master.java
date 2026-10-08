@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class master {
 
     static TWAircraftInput user_aircraft_TW_input = new TWAircraftInput();
+    static twDataInputLoad user_aircraft_TW_input_loads = new twDataInputLoad();
     static SavedTWAircraft[] user_TW_saved = new SavedTWAircraft[0];
     static twResults TW;
 
@@ -266,7 +267,7 @@ public class master {
              * break;
              * 
              * user_aircraft_TW_input.Wing_area_final = ...
-             * user_aircraft_TW_input.Wing_area_raw .* 2;
+             * user_aircraft_TW_input.Wing_area_raw 2;
              * break;
              * 
              * user_aircraft_TW_input.Wing_area = user_aircraft_TW_input.Wing_area_raw:...
@@ -567,13 +568,582 @@ public class master {
          * // Creating the wing_Area bounds
          * 
          * user_aircraft_TW_input.Wing_area_final = user_aircraft_TW_input.Wing_area_raw
-         * .* 2;
+         * * 2;
          * 
          * user_aircraft_TW_input.Wing_area = ...
          * user_aircraft_TW_input.Wing_area_raw:0.1:user_aircraft_TW_input.
          * Wing_area_final;
          */
         return user_aircraft_TW_input;
+    }
+
+    public static twResults calculate_TW_constraints(TWAircraftInput user_aircraft_TW_input) {
+
+        // Initial assumptions of aircraft design
+
+        double Gravity = 9.81;
+
+        double pi = 3.141592653589793238462643383;
+
+        twResults TW = new twResults();
+
+        // for fun I wrote down the decimals ik,
+        // the program rounds decimals to the 4th decimal
+
+        // rho_SL = 1.225;
+
+        // Cruise_velocity = 74.594;
+
+        // C_Dmin = 0.027; // Assumption from Cirrus sr 20
+
+        // C_Lmin = 0.3; // Assumption from Cirrus sr 20
+
+        // Sweep_angle = 3; // Made from assumption
+
+        // HP_to_watts = 745.7;
+
+        // The Design of the aircraft inputs
+
+        // NOTE Measuremnt in HP will be convert to Watts
+
+        // Engine_power_HP = 230; // Assumption of Eninge need data
+
+        // Span = 9; // assume based on aircraft type
+
+        // Wing_area = 8:0.1:16; // assume based on aircraft type
+
+        // Mass_without_wing_skin = 780; // assume based on aircraft type
+
+        // Wing_material_density = 2700; // assumption of kg/m^3 density of GA aluminum
+
+        // Wing_skin_thickness = 0.002; // assumption of mass of GA aluminum
+
+        // Engine Characteristics calculations
+
+        // Engine_power_watts = user_aircraft_TW_input.Engine_power_HP .* HP_to_watts;
+
+        // Mass of the aircraft and related Geometry calculations
+
+        // Fuel_spent_ground_to_TO = 0.11;
+
+        // Fuel_mass_per_gallon = 2.8; // ARD
+
+        double mass_loss_on_TO = user_aircraft_TW_input.Fuel_spent_ground_to_TO
+                * user_aircraft_TW_input.Fuel_mass_per_gallon;
+
+        int size = user_aircraft_TW_input.Wing_area.length;
+
+        double[] Wing_skin_area_total = new double[size];
+        double[] Wing_skin_volume = new double[size];
+        double[] Wing_skin_mass = new double[size];
+        double[] Mass_aircraft = new double[size];
+        double[] Mass_TO = new double[size];
+
+        TW.Weight_TO = new double[size];
+
+        double[] Wing_loading = new double[size];
+        double[] AR_wing = new double[size];
+
+        for (int i = 0; i < size; i++) {
+            Wing_skin_area_total[i] = 2 * user_aircraft_TW_input.Wing_area[i];
+
+            Wing_skin_volume[i] = Wing_skin_area_total[i] * user_aircraft_TW_input.Wing_skin_thickness;
+
+            Wing_skin_mass[i] = Wing_skin_volume[i] * user_aircraft_TW_input.Wing_material_density;
+
+            Mass_aircraft[i] = user_aircraft_TW_input.Mass_without_wing_skin + Wing_skin_mass[i];
+
+            // assume based on aircraft type
+
+            Mass_TO[i] = Mass_aircraft[i] - mass_loss_on_TO;
+
+            TW.Weight_TO[i] = Mass_TO[i] * Gravity;
+
+            Wing_loading[i] = TW.Weight_TO[i] / user_aircraft_TW_input.Wing_area[i];
+
+            AR_wing[i] = Math.pow(user_aircraft_TW_input.Span, 2) / user_aircraft_TW_input.Wing_area[i];
+        }
+
+        // Aerodynamic calculations
+
+        // Oswald efficiency calculations - Sweep angle calculation decision
+
+        TW.e = new double[size];
+
+        if (user_aircraft_TW_input.Sweep_angle == 0) {
+
+            for (int i = 0; i < size; i++) {
+                TW.e[i] = 1.78 * (1 - 0.045 * Math.pow(AR_wing[i], 0.68)) - 0.64;
+            }
+
+        } else if (user_aircraft_TW_input.Sweep_angle >= 30) {
+
+            for (int i = 0; i < size; i++) {
+                TW.e[i] = 4.61 * (1 - 0.045 * Math.pow(AR_wing[i], 0.68))
+                        * Math.pow(Math.cos(Math.toRadians(user_aircraft_TW_input.Sweep_angle)), 0.15) - 3.1;
+            }
+
+        } else if ((user_aircraft_TW_input.Sweep_angle > 0) &&
+                (user_aircraft_TW_input.Sweep_angle < 30)) {
+
+            TW.e0 = new double[size];
+            TW.e30 = new double[size];
+
+            for (int i = 0; i < size; i++) {
+                TW.e0[i] = 1.78 * (1 - 0.045 * Math.pow(AR_wing[i], 0.68)) - 0.64;
+
+                TW.e30[i] = 4.61 * (1 - 0.045 * Math.pow(AR_wing[i], 0.68))
+                        * Math.pow(Math.cos(Math.toRadians(30)), 0.15) - 3.1;
+
+                TW.e[i] = TW.e0[i] + (user_aircraft_TW_input.Sweep_angle / 30.0) * (TW.e30[i] - TW.e0[i]);
+            }
+
+        } else {
+
+            throw new IllegalArgumentException("Sweep angle is out of range");
+
+        }
+
+        // Full Drag Polar Buildup
+
+        TW.K_1 = new double[size];
+        TW.C_D0 = new double[size];
+        TW.K_2 = new double[size];
+
+        for (int i = 0; i < size; i++) {
+            TW.K_1[i] = 1.0 / (pi * AR_wing[i] * TW.e[i]);
+
+            TW.C_D0[i] = user_aircraft_TW_input.C_Dmin + TW.K_1[i] * Math.pow(user_aircraft_TW_input.C_Lmin, 2);
+
+            TW.K_2[i] = -2 * TW.K_1[i] * user_aircraft_TW_input.C_Lmin;
+        }
+
+        // Takeoff constraint assumptions, variables and formulas
+
+        // variables
+
+        // Desired inputs
+
+        // S_G = 502.92; // Ground roll takeoff distance
+
+        // K_TO = 1.2;
+
+        // C_Lmax_TO = 1.7; // Assumption including flaps, elevator, and wing
+
+        // Rolling_friction_coefficient = 0.03;
+
+        // Propeller_efficiency_TO = 0.75; // assume based on propeller
+
+        user_aircraft_TW_input.rho_TO = altitude_find_rho(user_aircraft_TW_input.altitude_TO);
+
+        // Velocity formulas
+
+        TW.Velocity_stall = new double[size];
+        TW.velocity_TO = new double[size];
+        TW.Velocity_avg_TO = new double[size];
+        TW.q_avg_TO = new double[size];
+        TW.C_L_required_TO = new double[size];
+        TW.C_DTO = new double[size];
+
+        double[] Acceleration_TO = new double[size];
+        double[] Thrust_to_Weight_TO = new double[size];
+
+        for (int i = 0; i < size; i++) {
+            TW.Velocity_stall[i] = Math.sqrt((2 * TW.Weight_TO[i]) / (user_aircraft_TW_input.rho_TO *
+                    user_aircraft_TW_input.Wing_area[i] * user_aircraft_TW_input.C_Lmax_TO));
+
+            TW.velocity_TO[i] = user_aircraft_TW_input.K_TO * TW.Velocity_stall[i];
+
+            TW.Velocity_avg_TO[i] = TW.velocity_TO[i] / Math.sqrt(2);
+
+            // constraints sub-formulas
+
+            TW.q_avg_TO[i] = 0.5 * user_aircraft_TW_input.rho_TO * Math.pow(TW.Velocity_avg_TO[i], 2);
+
+            TW.C_L_required_TO[i] = 2 * TW.Weight_TO[i] / (user_aircraft_TW_input.rho_TO *
+                    Math.pow(TW.velocity_TO[i], 2) * user_aircraft_TW_input.Wing_area[i]);
+
+            /// *C_L_ground_TO For a more accurate constraint create a lift
+            // coefficient that is specific for ground because the ground
+            // and takeoff coefficients are not the same*\
+
+            TW.C_DTO[i] = TW.C_D0[i] + (TW.K_1[i] * Math.pow(TW.C_L_required_TO[i], 2))
+                    + TW.K_2[i] * TW.C_L_required_TO[i];
+
+            /// *Lift_avg_TO = 0.5 .* user_aircraft_TW_input.rho_TO .* TW.Velocity_avg_TO.^2
+            // .* user_aircraft_TW_input.Wing_area .* C_L_required_TO;*\
+
+            /// *The lift average take off will change based on the average dynamic
+            // pressure, lift coefficients for the ground Take off and etc*\
+
+            /// *Drag_TO = 0.5 .* TW.C_DTO .* user_aircraft_TW_input.rho_TO .*
+            // user_aircraft_TW_input.Wing_area .* TW.velocity_TO.^2;*\
+
+            /// *Drag_avg_TO = 0.5 .* user_aircraft_TW_input.rho_TO .* TW.Velocity_avg_TO.^2
+            // .* user_aircraft_TW_input.Wing_area .* TW.C_DTO;*\
+
+            /// *Will also chagned when created ground drag coeffiecients for TO*\
+            /// *Thrust_TO = (user_aircraft_TW_input.Propeller_efficiency_TO .*
+            // Engine_power_watts) ./ TW.velocity_TO;*\
+
+            Acceleration_TO[i] = Math.pow(TW.velocity_TO[i], 2) / (2 * user_aircraft_TW_input.S_G);
+
+            Thrust_to_Weight_TO[i] = (Acceleration_TO[i] / Gravity) +
+                    (TW.q_avg_TO[i] * TW.C_DTO[i]) / Wing_loading[i]
+                    + user_aircraft_TW_input.Rolling_friction_coefficient
+                            * (1 - (TW.q_avg_TO[i] * TW.C_L_required_TO[i]) / Wing_loading[i]); // Takeoff Constraint
+        }
+
+        // Creating scatter plot for takeoff constraint
+
+        // figure;
+
+        // plot(Wing_loading, Thrust_to_Weight_TO, '-');
+
+        // hold on; //Stops from other plots from overriding the first
+
+        // Climb constraint
+
+        /// *This assumes no turns and constant climbing velocity, thus
+        // keeping the load factor (n) roughly around 1. Additionaly, the
+        // claculation assumes that there are no resistance such as landing
+        // gears or flaps that can have an inlfluence to drag are all not
+        // accounted for.*\
+
+        // Variables
+
+        double alpha = 1; // assuming Simple sea-level climb
+
+        // Aircraft desired Inputs
+
+        double n = 1;
+
+        // rate_of_climb = 3.5; //(meters per sec)
+
+        // velocity_climb = 48;
+
+        user_aircraft_TW_input.rho_climb = altitude_find_rho(user_aircraft_TW_input.altitude_climb);
+
+        // sub-formulas for the climb constraint
+
+        user_aircraft_TW_input.velocity_climb = conv_knts_to_ms(user_aircraft_TW_input.velocity_climb);
+
+        double q_climb = 0.5 * user_aircraft_TW_input.rho_climb *
+                Math.pow(user_aircraft_TW_input.velocity_climb, 2);
+
+        double[] Beta = new double[size]; // Weight fraction
+
+        // A more specific version of Beta could have bee the mass while
+        // climbing ./ Mass_TO
+
+        double[] Thrust_to_Weight_climb = new double[size];
+
+        for (int i = 0; i < size; i++) {
+            Beta[i] = Mass_TO[i] / Mass_aircraft[i];
+
+            Thrust_to_Weight_climb[i] = Beta[i] / alpha * (((TW.K_1[i] * Math.pow(n, 2) * Beta[i]) /
+                    q_climb) * (TW.Weight_TO[i] / user_aircraft_TW_input.Wing_area[i]) + TW.K_2[i] *
+                            n
+                    + TW.C_D0[i] / ((Beta[i] / q_climb) * Wing_loading[i]) +
+                    user_aircraft_TW_input.rate_of_climb /
+                            user_aircraft_TW_input.velocity_climb);
+        }
+
+        // plot(Wing_loading, Thrust_to_Weight_climb, '-');
+
+        // Cruise constraint
+
+        // variable
+
+        // knot_to_ms = 0.51444444;
+
+        // aircraft user inputs
+
+        // velocity_cruise = 155 .* knot_to_ms;
+
+        /// *Will change in the future for user input when wanting to know
+        // the T/W for the desired cruise knots they want. Additionaly, will
+        // add the calculation of the cruise velocity when user does not have
+        // a desire velcoity and will be based on the parameter they place for
+        // the aircraft.*\
+
+        user_aircraft_TW_input.rho_cruise = altitude_find_rho(user_aircraft_TW_input.altitude_cruise);
+
+        // sub-formulas for constraint
+
+        // velocity_cruise_knts = user_aircraft_TW_input.velocity_cruise .* knot_to_ms;
+
+        user_aircraft_TW_input.velocity_cruise = conv_knts_to_ms(user_aircraft_TW_input.velocity_cruise);
+
+        double q_cruise = 0.5 * user_aircraft_TW_input.rho_cruise *
+                Math.pow(user_aircraft_TW_input.velocity_cruise, 2);
+
+        double[] C_Lcruise = new double[size];
+
+        double[] C_D_cruise = new double[size];
+
+        double[] Thrust_to_Weight_cruise = new double[size];
+
+        for (int i = 0; i < size; i++) {
+            C_Lcruise[i] = Wing_loading[i] / q_cruise;
+
+            C_D_cruise[i] = TW.C_D0[i] + (TW.K_1[i] * Math.pow(C_Lcruise[i], 2)) + TW.K_2[i] * C_Lcruise[i];
+
+            // Calculate the thrust-to-weight ratio for cruise
+
+            Thrust_to_Weight_cruise[i] = (q_cruise * C_D_cruise[i]) / Wing_loading[i];
+        }
+
+        // plot(Wing_loading, Thrust_to_Weight_cruise, '-');
+
+        // Turn constraint
+
+        // Variables
+
+        // User desire input
+
+        // in meters of user idea of their aircraft turning
+
+        // radius_turn = 300;
+
+        user_aircraft_TW_input.rho_turn = altitude_find_rho(user_aircraft_TW_input.altitude_turn);
+
+        double C_Lmax_turn = user_aircraft_TW_input.C_Lmax_turn;
+
+        // Sub-formulas
+
+        // /*velocity_stall_straight = sqrt((2 .* Wing_loading) ...
+        // ./ (user_aircraft_TW_input.rho_turn .* C_Lmax_turn)); //A straight
+        // line of aircraft stall velocity*\
+
+        // The guess of the safe turn velocity
+
+        // velocity_guess_turn = user_aircraft_TW_input.K_turn .*
+        // velocity_stall_straight;
+
+        // Bank angle calculation from the guessed velocity and radius
+
+        /// *bank_angle = atand(velocity_guess_turn.^2 .
+        // (user_aircraft_TW_input.radius_turn * Gravity));*\
+
+        /// *The start of the loop. We make it run
+        // through the loop to be accurate*\
+
+        double[] n_turn = new double[size];
+        double[] velocity_safe_turn = new double[size];
+        double[] update_load_factor = new double[size];
+
+        for (int i = 0; i < size; i++) {
+            n_turn[i] = 1;
+        }
+
+        for (int refine_loop = 1; refine_loop <= 1000; refine_loop++) {
+
+            double[] n_old = n_turn.clone();
+
+            double maxDifference = 0;
+
+            for (int i = 0; i < size; i++) {
+
+                double velocity_stall_turn = Math.sqrt((2 * Wing_loading[i] * n_turn[i]) /
+                        (user_aircraft_TW_input.rho_turn * C_Lmax_turn));
+
+                // The safe turn
+
+                velocity_safe_turn[i] = user_aircraft_TW_input.K_turn * velocity_stall_turn;
+
+                // Usign the new safe turn velocity we update the load factor
+
+                update_load_factor[i] = 1.0 / Math.cos(Math.atan(Math.pow(velocity_safe_turn[i], 2) /
+                        (user_aircraft_TW_input.radius_turn * Gravity)));
+
+                n_turn[i] = update_load_factor[i];
+
+                maxDifference = Math.max(maxDifference, Math.abs(n_turn[i] - n_old[i]));
+            }
+
+            if (maxDifference < 0.0001) {
+                break;
+            }
+        }
+
+        TW.update_load_factor = update_load_factor;
+
+        // the dynamic pressure using the safe turn velcoity
+
+        double[] q_turn = new double[size];
+
+        // coefficents
+
+        double[] C_L_turn = new double[size];
+
+        double[] C_D_turn = new double[size];
+
+        // Thrust to Weight calculation
+
+        double[] Thrust_to_Weight_turn = new double[size];
+
+        boolean aircraftWillStall = false;
+
+        for (int i = 0; i < size; i++) {
+            q_turn[i] = 0.5 * user_aircraft_TW_input.rho_turn * Math.pow(velocity_safe_turn[i], 2);
+
+            C_L_turn[i] = TW.update_load_factor[i] * Wing_loading[i] / q_turn[i];
+
+            C_D_turn[i] = TW.C_D0[i] + TW.K_1[i] * Math.pow(C_L_turn[i], 2) + TW.K_2[i] * C_L_turn[i];
+
+            Thrust_to_Weight_turn[i] = (q_turn[i] * C_D_turn[i]) / Wing_loading[i];
+
+            if (C_L_turn[i] > C_Lmax_turn) {
+                aircraftWillStall = true;
+            }
+        }
+
+        // plot(Wing_loading, Thrust_to_Weight_turn, '-');
+
+        if (aircraftWillStall) {
+
+            // aircraft would stall / turn condition is infeasible
+
+            throw new IllegalArgumentException("The aircraft will stall due to the turn needing to be higher than"
+                    + " the lift coefficent. This aircraft I would not recommend to use"
+                    + " this any design from this graph unless you found out which aircraft"
+                    + "was causing the problem.");
+        }
+
+        // Horizontal Acceleration constraint
+
+        /// *The constraitn assumes that the aircraft is accelerating in a horizontal
+        // position, no banking nor pitching. The constraitn is asuming that the
+        // aircraft is in a cruise phase.*\
+
+        // variables
+
+        // user inputs
+
+        // velocity_accel = 50;
+
+        // accel_horiz = 1.1;
+
+        user_aircraft_TW_input.rho_horiz_accel = altitude_find_rho(user_aircraft_TW_input.altitude_horiz_accel);
+
+        // sub-formulas
+
+        user_aircraft_TW_input.velocity_accel = conv_knts_to_ms(user_aircraft_TW_input.velocity_accel);
+
+        double q_accel = 0.5 * user_aircraft_TW_input.rho_horiz_accel *
+                Math.pow(user_aircraft_TW_input.velocity_accel, 2);
+
+        double[] C_L_accel = new double[size];
+
+        double[] C_D_accel = new double[size];
+
+        // horizontal accel. constraint
+
+        double[] Thrust_to_Weight_horiz_accel = new double[size];
+
+        for (int i = 0; i < size; i++) {
+            C_L_accel[i] = Wing_loading[i] / q_accel;
+
+            C_D_accel[i] = TW.C_D0[i] + TW.K_1[i] * Math.pow(C_L_accel[i], 2) + TW.K_2[i] * C_L_accel[i];
+
+            Thrust_to_Weight_horiz_accel[i] = (q_accel * C_D_accel[i]) / Wing_loading[i]
+                    + user_aircraft_TW_input.accel_horiz / Gravity; // Horizontal acceleration
+        }
+
+        // plot(Wing_loading, Thrust_to_Weight_horiz_accel, '-');
+
+        // Approach Constraint
+
+        // variables
+
+        // User input
+
+        // velocity_approach = user_aircraft_TW_input.velocity_approach .* knot_to_ms;
+
+        // K_approach = 1.3;
+
+        user_aircraft_TW_input.rho_approach = altitude_find_rho(user_aircraft_TW_input.altitude_approach);
+
+        // sub-formulas
+
+        user_aircraft_TW_input.velocity_approach = conv_knts_to_ms(user_aircraft_TW_input.velocity_approach);
+
+        // Converting knots to m/s
+
+        double velocity_stall_approach = user_aircraft_TW_input.velocity_approach /
+                user_aircraft_TW_input.K_approach;
+
+        double q_approach = 0.5 * user_aircraft_TW_input.rho_approach *
+                Math.pow(velocity_stall_approach, 2);
+
+        // C_L_approach = Wing_loading ./ q_approach;
+
+        // approach formula constraint
+
+        double Wing_loading_approach = q_approach * user_aircraft_TW_input.C_Lmax_approach;
+
+        // This creates a veritcal line for the apporach constraint
+
+        // xline(Wing_loading_approach, '-');
+
+        // xlabel('Wing Loading (N/m^2)');
+
+        // ylabel('Thrust to Weight Ratio, T/W');
+
+        // title('Constraints: T/W vs Wing Loading');
+
+        // grid on;
+
+        // legend('Takeoff', 'Climb', 'Cruise', 'Turn', 'Horizontal Acceleration',
+        // 'Approach');
+
+        //
+
+        // ///*stops the plots from being in the hold
+
+        // //mode thus future plots can ovveride*\
+
+        //
+
+        // hold off;
+
+        // T/W for plots
+
+        TW.Takeoff_constraint = Thrust_to_Weight_TO;
+
+        TW.Climb_constraint = Thrust_to_Weight_climb;
+
+        TW.Cruise_constraint = Thrust_to_Weight_cruise;
+
+        TW.Turn_constraint = Thrust_to_Weight_turn;
+
+        TW.Horizontal_acceleration_constraint = Thrust_to_Weight_horiz_accel;
+
+        TW.Approach_wing_loading_constraint = Wing_loading_approach;
+
+        TW.Wing_loading_x_axis = Wing_loading;
+
+        // For displaying TW data from ST menu
+
+        // For Forward CG limit
+
+        TW.q_TO = new double[size];
+
+        for (int i = 0; i < size; i++) {
+            TW.q_TO[i] = 0.5 * user_aircraft_TW_input.rho_TO * Math.pow(TW.velocity_TO[i], 2);
+        }
+
+        // TW.C_L_required_TO was already calculated above and stored in
+        // TW.C_L_required_TO
+
+        // For calculating the loads
+
+        TW.rho_cruise = user_aircraft_TW_input.rho_cruise;
+
+        TW.velocity_cruise = user_aircraft_TW_input.velocity_cruise;
+
+        return TW;
     }
 
 }
