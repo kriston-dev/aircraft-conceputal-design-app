@@ -2,10 +2,17 @@ package com.kriston.test1;
 
 import java.util.Scanner;
 
+//Remove this when going to add graphto app, we might use this
+/* 
+import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+
+*/
+
 public class master {
 
     static TWAircraftInput user_aircraft_TW_input = new TWAircraftInput();
-    static twDataInputLoad user_aircraft_TW_input_loads = new twDataInputLoad();
     static SavedTWAircraft[] user_TW_saved = new SavedTWAircraft[0];
     static twResults TW;
 
@@ -93,11 +100,11 @@ public class master {
                 // This calculates what the user entered from getting the T/W aircraft data
 
                 case CALCULATE_TW:
-                    user_aircraft_TW_input_loads = user_aircraft_TW_input;
+                    // user_aircraft_TW_input_loads = user_aircraft_TW_input;
 
-                    user_aircraft_TW_input_loads.Wing_area = user_ST_aircraft_input.Wing_area;
+                    // user_aircraft_TW_input_loads.Wing_area = user_ST_aircraft_input.Wing_area;
 
-                    TW = calculate_TW_constraints(user_aircraft_TW_input_loads);
+                    TW = calculate_TW_constraints(user_aircraft_TW_input);
 
                     App.currState = Aircraft_constraint_states.GRAPH_TW;
 
@@ -106,7 +113,7 @@ public class master {
                 // This graphs what the calculation gave from getting the T/W aircraft data
                 case GRAPH_TW:
                     display_TW(TW);
-                    user_TW_saved = save_user_aircraft(user_TW_saved, user_aircraft_TW_input);
+                    // user_TW_saved = save_user_aircraft(user_TW_saved, user_aircraft_TW_input);
                     App.currState = Aircraft_constraint_states.MAIN_MENU;
                     // disp(user_TW_saved(1).user_input);
 
@@ -631,7 +638,12 @@ public class master {
         double mass_loss_on_TO = user_aircraft_TW_input.Fuel_spent_ground_to_TO
                 * user_aircraft_TW_input.Fuel_mass_per_gallon;
 
-        int size = user_aircraft_TW_input.Wing_area.length;
+        user_aircraft_TW_input.Wing_area_final = user_aircraft_TW_input.Wing_area_raw * 2;
+
+        int size = (int) Math
+                .round((user_aircraft_TW_input.Wing_area_final - user_aircraft_TW_input.Wing_area_raw) / 0.1) + 1;
+
+        user_aircraft_TW_input.Wing_area = new double[size];
 
         double[] Wing_skin_area_total = new double[size];
         double[] Wing_skin_volume = new double[size];
@@ -645,6 +657,7 @@ public class master {
         double[] AR_wing = new double[size];
 
         for (int i = 0; i < size; i++) {
+
             Wing_skin_area_total[i] = 2 * user_aircraft_TW_input.Wing_area[i];
 
             Wing_skin_volume[i] = Wing_skin_area_total[i] * user_aircraft_TW_input.Wing_skin_thickness;
@@ -653,15 +666,14 @@ public class master {
 
             Mass_aircraft[i] = user_aircraft_TW_input.Mass_without_wing_skin + Wing_skin_mass[i];
 
-            // assume based on aircraft type
-
             Mass_TO[i] = Mass_aircraft[i] - mass_loss_on_TO;
 
             TW.Weight_TO[i] = Mass_TO[i] * Gravity;
 
             Wing_loading[i] = TW.Weight_TO[i] / user_aircraft_TW_input.Wing_area[i];
 
-            AR_wing[i] = Math.pow(user_aircraft_TW_input.Span, 2) / user_aircraft_TW_input.Wing_area[i];
+            AR_wing[i] = Math.pow(user_aircraft_TW_input.Span, 2)
+                    / user_aircraft_TW_input.Wing_area[i];
         }
 
         // Aerodynamic calculations
@@ -1144,6 +1156,71 @@ public class master {
         TW.velocity_cruise = user_aircraft_TW_input.velocity_cruise;
 
         return TW;
+    }
+
+    public static double altitude_find_rho(double altitude) {
+
+        double rho_SL = 1.225;
+        double Gravity = 9.80665;
+        double temp_SL = 288.15;
+        double temp_lapse_rate = 0.0065;
+        double air_gas = 287.05;
+
+        double rho = rho_SL
+                * Math.pow(1 - (temp_lapse_rate * altitude) / temp_SL, (Gravity / (air_gas * temp_lapse_rate)) - 1);
+
+        return rho;
+    }
+
+    public static double conv_knts_to_ms(double velocity_knots) {
+
+        double velocity_ms = velocity_knots * 0.5144;
+
+        return velocity_ms;
+
+    }
+
+    public static void display_TW(twResults TW) {
+        System.out.println("This is entering function display to graph T/W cosntraints");
+        System.out.println(java.util.Arrays.toString(TW.Takeoff_constraint));
+
+        // TW.Takeoff_constraint = Thrust_to_Weight_TO;
+        // TW.Climb_constraint = Thrust_to_Weight_climb;
+        // TW.Cruise_constraint = Thrust_to_Weight_cruise;
+        // TW.Turn_constraint = Thrust_to_Weight_turn;
+        // TW.Horizontal_acceleration_constraint = Thrust_to_Weight_horiz_accel;
+        // TW.Approach_wing_loading_constraint = Wing_loading_approach;
+        //
+        // TW.Wing_loading_x_axis = Wing_loading;
+
+        /*
+         * plot(TW.Wing_loading_x_axis, TW.Takeoff_constraint, '-');
+         * hold on;
+         * 
+         * plot(TW.Wing_loading_x_axis, TW.Climb_constraint, '-');
+         * 
+         * plot(TW.Wing_loading_x_axis, TW.Cruise_constraint, '-');
+         * 
+         * plot(TW.Wing_loading_x_axis, TW.Turn_constraint, '-');
+         * 
+         * plot(TW.Wing_loading_x_axis, TW.Horizontal_acceleration_constraint, '-');
+         * 
+         * // Approach is a vertical wing-loading constraint
+         * xline(TW.Approach_wing_loading_constraint, '-');
+         * 
+         * xlabel('Wing Loading (N/m^2)');
+         * ylabel('Thrust to Weight Ratio, T/W');
+         * title('Constraints: T/W vs Wing Loading');
+         * grid on;
+         * legend('Takeoff', 'Climb', 'Cruise', 'Turn', 'Horizontal Acceleration',...
+         * 'Approach');
+         * 
+         * ///*stops the plots from being in the hold
+         * //mode thus future plots can ovveride*\
+         * 
+         * hold off;
+         */
+
     }
 
 }
