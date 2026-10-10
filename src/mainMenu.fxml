@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="TOP_CENTER" spacing="20.0"
+   xmlns="http://javafx.com/javafx/8.0.171"
+   xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="com.kriston.test1.mainMenuController">
+   
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+  
+   <children>
+      <Label text="Aircraft Conceptual Designer" />
+
+      <VBox alignment="CENTER" spacing="20.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Button fx:id="findTW"
+               text="Find Thrust to Weight ratio"
+               onAction="#getTW"/>
+
+            <Button fx:id="findTW"
+               text="Thrust to Weight Ratio Saved Documents"
+               onAction="#getTW"/>
+         
+         </children>
+
+      </VBox>
+
+   </children>
+
+</VBox>
