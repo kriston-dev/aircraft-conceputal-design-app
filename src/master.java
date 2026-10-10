@@ -147,9 +147,12 @@ public class master {
         System.out.println(" - T/W docs");
 
         Scanner scan = new Scanner(System.in);
+        scan.close();
 
         System.out.println("My choice is: ");
         String user_path = scan.nextLine();
+
+        scan.close();
 
         if (user_path.equals("Find T/W")) {
             return Aircraft_constraint_states.GET_TW_AIRCRAFT_DATA;
@@ -191,6 +194,7 @@ public class master {
 
         System.out.println("your choice: ");
         user_input = scan.nextInt();
+        scan.close();
 
         switch (user_input) {
 
@@ -263,6 +267,7 @@ public class master {
             case 1:
                 System.out.println("Engine power (HP): ");
                 user_aircraft_TW_input.Engine_power_HP = scan.nextInt();
+                scan.close();
                 break;
             /*
              * case 2:
@@ -581,6 +586,7 @@ public class master {
          * user_aircraft_TW_input.Wing_area_raw:0.1:user_aircraft_TW_input.
          * Wing_area_final;
          */
+        scan.close();
         return user_aircraft_TW_input;
     }
 
