@@ -453,7 +453,6 @@ public class master {
 
     public static TWAircraftInput get_user_aircraft_design_inputs() {
 
-        Scanner scan = new Scanner(System.in);
 
         // user_aircraft_TW_input.
         // Will add more once organized all the user inputs and can add
@@ -462,121 +461,7 @@ public class master {
 
         // Aircraft geometry / design
 
-        System.out.println("Engine power (HP): ");
-        user_aircraft_TW_input.Engine_power_HP = scan.nextInt();
-
-        /*
-         * user_aircraft_TW_input.Span = input("Wing span (m): ");
-         * 
-         * user_aircraft_TW_input.Wing_area_raw = input("Wing area (m^2): ");
-         * 
-         * user_aircraft_TW_input.Sweep_angle = input("Wing sweep angle (deg): ");
-         * 
-         * 
-         * // Aircraft mass / material assumptions
-         * 
-         * user_aircraft_TW_input.Mass_without_wing_skin = ...
-         * input("Aircraft mass without wing skin (kg): ");
-         * 
-         * user_aircraft_TW_input.Wing_material_density = ...
-         * input("Wing material density (kg/m^3): ");
-         * 
-         * user_aircraft_TW_input.Wing_skin_thickness = ...
-         * input("Wing skin thickness (m): ");
-         * 
-         * 
-         * // Aerodynamic assumptions
-         * 
-         * user_aircraft_TW_input.C_Dmin = input("Minimum drag coefficient C_Dmin: ");
-         * 
-         * user_aircraft_TW_input.C_Lmin = ...
-         * input("Lift coefficient at minimum drag C_Lmin: ");
-         * 
-         * user_aircraft_TW_input.C_Lmax_TO = ...
-         * input("Maximum takeoff lift coefficient C_Lmax_TO: ");
-         * 
-         * 
-         * // Takeoff requirements / assumptions
-         * 
-         * user_aircraft_TW_input.S_G = input("Takeoff ground roll distance (m): ");
-         * 
-         * user_aircraft_TW_input.K_TO =
-         * input("Takeoff stall-speed safety factor K_TO: ");
-         * 
-         * user_aircraft_TW_input.Rolling_friction_coefficient = ...
-         * input("Rolling friction coefficient: ");
-         * 
-         * user_aircraft_TW_input.Propeller_efficiency_TO = ...
-         * input("Takeoff propeller efficiency: ");
-         * 
-         * user_aircraft_TW_input.altitude_TO = input("Takeoff altitude (m): ");
-         * 
-         * 
-         * // Fuel assumptions
-         * 
-         * user_aircraft_TW_input.Fuel_spent_ground_to_TO = ...
-         * input("Fuel used before/during takeoff (gal): ");
-         * 
-         * user_aircraft_TW_input.Fuel_mass_per_gallon = ...
-         * input("Fuel mass per gallon (kg/gal): ");
-         * 
-         * 
-         * // Climb requirements
-         * 
-         * user_aircraft_TW_input.rate_of_climb = input("Required climb rate: ");
-         * 
-         * user_aircraft_TW_input.velocity_climb = ...
-         * input("Climb velocity (knots): ");
-         * 
-         * user_aircraft_TW_input.altitude_climb =
-         * input("Climb constraint altitude (m): ");
-         * 
-         * 
-         * // Cruise requirements
-         * 
-         * user_aircraft_TW_input.velocity_cruise = ...
-         * input("Cruise velocity (knots): ");
-         * 
-         * user_aircraft_TW_input.altitude_cruise = input("Cruise altitude (m): ");
-         * 
-         * 
-         * // Turn requirements
-         * 
-         * user_aircraft_TW_input.radius_turn = input("Turn radius (m): ");
-         * 
-         * user_aircraft_TW_input.altitude_turn = input("Turn altitude (m): ");
-         * 
-         * user_aircraft_TW_input.C_Lmax_turn = input("Turn max lift coefficient: ");
-         * 
-         * user_aircraft_TW_input.K_turn =
-         * input("Takeoff stall-speed safety factor K_turn: ");
-         * 
-         * 
-         * // Horizontal acceleration requirements
-         * 
-         * user_aircraft_TW_input.velocity_accel = ...
-         * input("Horizontal acceleration's velocity (knots): ");
-         * 
-         * user_aircraft_TW_input.accel_horiz = ...
-         * input("Required horizontal acceleration (m/s^2): ");
-         * 
-         * user_aircraft_TW_input.altitude_horiz_accel = ...
-         * input("Horizontal acceleration altitude (m): ");
-         * 
-         * 
-         * // Approach requirements
-         * 
-         * user_aircraft_TW_input.velocity_approach =
-         * input("Approach velocity (knots): ");
-         * 
-         * user_aircraft_TW_input.K_approach = ...
-         * input("Approach stall-speed safety factor K_approach: ");
-         * 
-         * user_aircraft_TW_input.C_Lmax_approach = ...
-         * input("Maximum approach lift coefficient C_Lmax_approach: ");
-         * 
-         * user_aircraft_TW_input.altitude_approach = input("Approach altitude (m): ");
-         * 
+/* 
          * // Creating the wing_Area bounds
          * 
          * user_aircraft_TW_input.Wing_area_final = user_aircraft_TW_input.Wing_area_raw
@@ -586,7 +471,6 @@ public class master {
          * user_aircraft_TW_input.Wing_area_raw:0.1:user_aircraft_TW_input.
          * Wing_area_final;
          */
-        scan.close();
         return user_aircraft_TW_input;
     }
 
@@ -594,7 +478,7 @@ public class master {
 
         // Initial assumptions of aircraft design
 
-        double Gravity = 9.81;
+        double Gravity = 9.8;
 
         double pi = 3.141592653589793238462643383;
 
