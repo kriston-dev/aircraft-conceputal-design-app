@@ -4,19 +4,180 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
-
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.geometry.Insets?>
 
+<ScrollPane fitToWidth="true"
+    hbarPolicy="NEVER"
+    vbarPolicy="AS_NEEDED"
+    xmlns="http://javafx.com/javafx/8.0.171"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.kriston.test1.TWDataInputController">
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kriston.test1.TWDataInputController">
-    <children>
-        <Label text="enter span here:" />
-        <TextField fx:id="spanInput"
-            promptText="Enter reference wing in meters"
-            style="-fx-prompt-text-fill: gray;"/>
-        <Button text="T/W to Wing Loading Graph" onAction="#handleTWGraph"/>
-    </children>
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
-</VBox>
+    <content>
+        <VBox alignment="CENTER" spacing="20.0">
+
+            <children>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="Engine_power_HPInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="SpanInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="Wing_area_rawInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="Sweep_angleInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="Mass_without_wing_skinInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="Wing_material_densityInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="Wing_skin_thicknessInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="C_DminInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="C_LminInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="C_Lmax_TOInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="S_GInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="K_TOInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="Rolling_friction_coefficientInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="Propeller_efficiency_TOInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="altitude_TOInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="Fuel_spent_ground_to_TOInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+                
+                <Label text="enter Fuel_spent_ground_to_TOInput here:" />
+
+                <TextField fx:id="Fuel_mass_per_gallonInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="rate_of_climbInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+                    
+                <Label text="enter span here:" />
+                <TextField fx:id="velocity_climbInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="altitude_climbInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="velocity_cruiseInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Label text="enter span here:" />
+                <TextField fx:id="altitude_cruiseInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+                    
+                <Label text="enter span here:" />
+                <TextField fx:id="radius_turnInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                    <Label text="enter span here:" />
+                <TextField fx:id="Engine_power_HPInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                    <Label text="enter span here:" />
+                <TextField fx:id="Engine_power_HPInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                    <Label text="enter span here:" />
+                <TextField fx:id="Engine_power_HPInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                    <Label text="enter span here:" />
+                <TextField fx:id="Engine_power_HPInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                    <Label text="enter span here:" />
+                <TextField fx:id="Engine_power_HPInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                    <Label text="enter span here:" />
+                <TextField fx:id="Engine_power_HPInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                    <Label text="enter span here:" />
+                <TextField fx:id="Engine_power_HPInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+
+                <Button text="T/W to Wing Loading Graph" onAction="#handleTWGraph"/>
+
+            </children>
+
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+
+        </VBox>
+    </content>
+</ScrollPane>
