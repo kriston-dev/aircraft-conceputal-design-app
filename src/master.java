@@ -1,5 +1,6 @@
 package com.kriston.test1;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 //Remove this when going to add graphto app, we might use this
@@ -52,91 +53,95 @@ public class master {
          */
     }
 
-    public static void main(String[] args) {
+    public static void main(Aircraft_constraint_states newState) throws IOException {
 
-        while (true) {
-            switch (App.currState) {
+        App.currState = newState;
 
-                // This is the main page
-                case MAIN_MENU:
-                    App.currState = user_state();
-                    break;
+        switch (App.currState) {
 
-                // This shows the user T/W saved aircraft data names
-                case SAVED_TW_AIRCRAFT_DATA:
-                    App.currState = doc_options(user_TW_saved);
-                    break;
+            // This is the main page
+            case MAIN_MENU:
+                App.currState = user_state();
 
-                // This shows the menu of the specific T/W aircraft the user chose
-                case USER_TW_AIRCRAFT_MENU:
-                    user_aircraft_TW_input = user_TW_saved[0].user_input;
+                break;
 
-                    // [App.currState, user_TW_saved] = user_TW_aircraft_menu(user_TW_saved);
-                    break;
+            // This shows the user T/W saved aircraft data names
+            case SAVED_TW_AIRCRAFT_DATA:
+                // App.currState = doc_options(user_TW_saved);
+                break;
 
-                // This edits the user specific T/W aircraft data that they chose
-                case EDIT_SAVED_TW_AIRCRAFT:
-                    user_aircraft_TW_input = user_TW_saved[0].user_input;
+            // This shows the menu of the specific T/W aircraft the user chose
+            case USER_TW_AIRCRAFT_MENU:
+                user_aircraft_TW_input = user_TW_saved[0].user_input;
 
-                    user_aircraft_TW_input = edit_TW_aircraft(user_aircraft_TW_input);
+                // [App.currState, user_TW_saved] = user_TW_aircraft_menu(user_TW_saved);
+                break;
 
-                    user_TW_saved[0].user_input = user_aircraft_TW_input;
+            // This edits the user specific T/W aircraft data that they chose
+            case EDIT_SAVED_TW_AIRCRAFT:
+                user_aircraft_TW_input = user_TW_saved[0].user_input;
 
-                    // save("user_TW_aircraft.mat", "user_TW_saved");
+                user_aircraft_TW_input = edit_TW_aircraft(user_aircraft_TW_input);
 
-                    System.out.println("Data has been saved...");
+                user_TW_saved[0].user_input = user_aircraft_TW_input;
 
-                    App.currState = Aircraft_constraint_states.USER_TW_AIRCRAFT_MENU;
-                    break;
+                // save("user_TW_aircraft.mat", "user_TW_saved");
 
-                // This asks the user for T/W aircraft data
-                case GET_TW_AIRCRAFT_DATA:
-                    user_aircraft_TW_input = get_user_aircraft_design_inputs();
+                System.out.println("Data has been saved...");
 
-                    App.currState = Aircraft_constraint_states.CALCULATE_TW;
+                App.currState = Aircraft_constraint_states.USER_TW_AIRCRAFT_MENU;
+                break;
 
-                    break;
+            // This asks the user for T/W aircraft data
+            case GET_TW_AIRCRAFT_DATA:
+                System.out.println("entering getting data from master");
+                user_aircraft_TW_input = get_user_aircraft_design_inputs();
 
-                // This calculates what the user entered from getting the T/W aircraft data
+                App.currState = Aircraft_constraint_states.CALCULATE_TW;
 
-                case CALCULATE_TW:
-                    // user_aircraft_TW_input_loads = user_aircraft_TW_input;
+                break;
 
-                    // user_aircraft_TW_input_loads.Wing_area = user_ST_aircraft_input.Wing_area;
+            // This calculates what the user entered from getting the T/W aircraft data
 
-                    TW = calculate_TW_constraints(user_aircraft_TW_input);
+            case CALCULATE_TW:
+                System.out.println("entering calculations from master");
+                // user_aircraft_TW_input_loads = user_aircraft_TW_input;
 
-                    App.currState = Aircraft_constraint_states.GRAPH_TW;
+                // user_aircraft_TW_input_loads.Wing_area = user_ST_aircraft_input.Wing_area;
 
-                    break;
+                TW = calculate_TW_constraints(user_aircraft_TW_input);
 
-                // This graphs what the calculation gave from getting the T/W aircraft data
-                case GRAPH_TW:
-                    display_TW(TW);
-                    // user_TW_saved = save_user_aircraft(user_TW_saved, user_aircraft_TW_input);
-                    App.currState = Aircraft_constraint_states.MAIN_MENU;
-                    // disp(user_TW_saved(1).user_input);
+                App.currState = Aircraft_constraint_states.GRAPH_TW;
 
-                    break;
+                break;
 
-                // This calculates what the user T/W aircraft data entered from getting the
-                // aircraft data
-                case CALCULATE_TW_FROM_USER_TW_DATA_CALCULATION:
-                    TW = calculate_TW_constraints(user_aircraft_TW_input);
+            // This graphs what the calculation gave from getting the T/W aircraft data
+            case GRAPH_TW:
+                System.out.println("entering calculations from master");
+                display_TW(TW);
+                // user_TW_saved = save_user_aircraft(user_TW_saved, user_aircraft_TW_input);
+                App.currState = Aircraft_constraint_states.MAIN_MENU;
+                // disp(user_TW_saved(1).user_input);
 
-                    App.currState = Aircraft_constraint_states.GRAPH_TW_FROM_USER_TW_DATA_CALCULATION;
-                    break;
+                break;
 
-                /*
-                 * This graphs the calculation that was recieved from the user T/W
-                 * aircraft data file
-                 */ case GRAPH_TW_FROM_USER_TW_DATA_CALCULATION:
-                    display_TW(TW);
+            // This calculates what the user T/W aircraft data entered from getting the
+            // aircraft data
+            case CALCULATE_TW_FROM_USER_TW_DATA_CALCULATION:
+                TW = calculate_TW_constraints(user_aircraft_TW_input);
 
-                    App.currState = Aircraft_constraint_states.SAVED_TW_AIRCRAFT_DATA;
+                App.currState = Aircraft_constraint_states.GRAPH_TW_FROM_USER_TW_DATA_CALCULATION;
+                break;
 
-                    break;
-            }
+            /*
+             * This graphs the calculation that was recieved from the user T/W
+             * aircraft data file
+             */ case GRAPH_TW_FROM_USER_TW_DATA_CALCULATION:
+                display_TW(TW);
+
+                App.currState = Aircraft_constraint_states.SAVED_TW_AIRCRAFT_DATA;
+
+                break;
         }
     }
 
@@ -178,37 +183,39 @@ public class master {
          */
     }
 
-    public static Aircraft_constraint_states doc_options(SavedTWAircraft[] user_TW_saved) {
-
-        int user_input;
-
-        Scanner scan = new Scanner(System.in);
-
-        if (user_TW_saved.length == 0) {
-            System.out.println("No saved T/W aircraft data...");
-            return Aircraft_constraint_states.MAIN_MENU;
-        }
-
-        System.out.println("0  - Back to the last page");
-        System.out.println("1  - user's " + user_TW_saved[0].name);
-
-        System.out.println("your choice: ");
-        user_input = scan.nextInt();
-        scan.close();
-
-        switch (user_input) {
-
-            case 0:
-                return Aircraft_constraint_states.MAIN_MENU;
-
-            case 1:
-                return Aircraft_constraint_states.USER_TW_AIRCRAFT_MENU;
-
-            default:
-                return Aircraft_constraint_states.SAVED_TW_AIRCRAFT_DATA;
-        }
-    }
-
+    /*
+     * public static Aircraft_constraint_states doc_options(SavedTWAircraft[]
+     * user_TW_saved) {
+     * 
+     * int user_input;
+     * 
+     * Scanner scan = new Scanner(System.in);
+     * 
+     * if (user_TW_saved.length == 0) {
+     * System.out.println("No saved T/W aircraft data...");
+     * return Aircraft_constraint_states.MAIN_MENU;
+     * }
+     * 
+     * System.out.println("0  - Back to the last page");
+     * System.out.println("1  - user's " + user_TW_saved[0].name);
+     * 
+     * System.out.println("your choice: ");
+     * user_input = scan.nextInt();
+     * scan.close();
+     * 
+     * switch (user_input) {
+     * 
+     * case 0:
+     * return Aircraft_constraint_states.MAIN_MENU;
+     * 
+     * case 1:
+     * return Aircraft_constraint_states.USER_TW_AIRCRAFT_MENU;
+     * 
+     * default:
+     * return Aircraft_constraint_states.SAVED_TW_AIRCRAFT_DATA;
+     * }
+     * }
+     */
     public static TWAircraftInput edit_TW_aircraft(TWAircraftInput user_aircraft_TW_input) {
 
         int edit;
@@ -453,7 +460,6 @@ public class master {
 
     public static TWAircraftInput get_user_aircraft_design_inputs() {
 
-
         // user_aircraft_TW_input.
         // Will add more once organized all the user inputs and can add
 
@@ -461,7 +467,7 @@ public class master {
 
         // Aircraft geometry / design
 
-/* 
+        /*
          * // Creating the wing_Area bounds
          * 
          * user_aircraft_TW_input.Wing_area_final = user_aircraft_TW_input.Wing_area_raw
@@ -478,7 +484,7 @@ public class master {
 
         // Initial assumptions of aircraft design
 
-        double Gravity = 9.8;
+        double Gravity = 9.80665;
 
         double pi = 3.141592653589793238462643383;
 
@@ -547,6 +553,8 @@ public class master {
         double[] AR_wing = new double[size];
 
         for (int i = 0; i < size; i++) {
+
+            user_aircraft_TW_input.Wing_area[i] = user_aircraft_TW_input.Wing_area_raw + (i * 0.1);
 
             Wing_skin_area_total[i] = 2 * user_aircraft_TW_input.Wing_area[i];
 
