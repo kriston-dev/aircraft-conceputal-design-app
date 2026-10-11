@@ -11,7 +11,71 @@ import javafx.scene.control.Alert;
 public class TWDataInputController {
 
     @FXML
+    private TextField Engine_power_HPInput;
+    @FXML
     private TextField SpanInput;
+    @FXML
+    private TextField Wing_area_rawInput;
+    @FXML
+    private TextField Sweep_angleInput;
+    @FXML
+    private TextField Mass_without_wing_skinInput;
+    @FXML
+    private TextField Wing_material_densityInput;
+    @FXML
+    private TextField Wing_skin_thicknessInput;
+    @FXML
+    private TextField C_DminInput;
+    @FXML
+    private TextField C_LminInput;
+    @FXML
+    private TextField C_Lmax_TOInput;
+    @FXML
+    private TextField S_GInput;
+    @FXML
+    private TextField K_TOInput;
+    @FXML
+    private TextField Rolling_friction_coefficientInput;
+    @FXML
+    private TextField Propeller_efficiency_TOInput;
+    @FXML
+    private TextField altitude_TOInput;
+    @FXML
+    private TextField Fuel_spent_ground_to_TOInput;
+    @FXML
+    private TextField Fuel_mass_per_gallonInput;
+    @FXML
+    private TextField rate_of_climbInput;
+    @FXML
+    private TextField velocity_climbInput;
+    @FXML
+    private TextField altitude_climbInput;
+    @FXML
+    private TextField velocity_cruiseInput;
+    @FXML
+    private TextField altitude_cruiseInput;
+    @FXML
+    private TextField radius_turnInput;
+    @FXML
+    private TextField altitude_turnInput;
+    @FXML
+    private TextField C_Lmax_turnInput;
+    @FXML
+    private TextField K_turnInput;
+    @FXML
+    private TextField velocity_accelInput;
+    @FXML
+    private TextField accel_horizInput;
+    @FXML
+    private TextField altitude_horiz_accelInput;
+    @FXML
+    private TextField velocity_approachInput;
+    @FXML
+    private TextField K_approachInput;
+    @FXML
+    private TextField C_Lmax_approachInput;
+    @FXML
+    private TextField altitude_approachInput;
 
     @FXML
     private void handleTWGraph() throws IOException {
@@ -33,8 +97,7 @@ public class TWDataInputController {
             user_aircraft_TW_input.S_G = Double.parseDouble(S_GInput.getText());
 
             user_aircraft_TW_input.K_TO = Double.parseDouble(K_TOInput.getText());
-            user_aircraft_TW_input.Rolling_friction_coefficient = Double
-                    .parseDouble(Rolling_friction_coefficientInput.getText());
+            user_aircraft_TW_input.Rolling_friction_coefficient = Double.parseDouble(Rolling_friction_coefficientInput.getText());
 
             user_aircraft_TW_input.Propeller_efficiency_TO = Double.parseDouble(Propeller_efficiency_TOInput.getText());
             user_aircraft_TW_input.altitude_TO = Double.parseDouble(altitude_TOInput.getText());
@@ -72,7 +135,7 @@ public class TWDataInputController {
 
         }
 
-        App.setRoot("NaN");
+        master.main(Aircraft_constraint_states.CALCULATE_TW);
         System.out.println("T/W Graph button pressed");
 
     }

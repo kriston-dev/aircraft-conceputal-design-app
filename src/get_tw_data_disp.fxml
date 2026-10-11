@@ -136,37 +136,52 @@
                     style="-fx-prompt-text-fill: gray;"/>
 
                     <Label text="enter span here:" />
-                <TextField fx:id="Engine_power_HPInput"
+                <TextField fx:id="altitude_turnInput"
                     promptText="Enter reference wing in meters"
                     style="-fx-prompt-text-fill: gray;"/>
 
                     <Label text="enter span here:" />
-                <TextField fx:id="Engine_power_HPInput"
+                <TextField fx:id="C_Lmax_turnInput"
                     promptText="Enter reference wing in meters"
                     style="-fx-prompt-text-fill: gray;"/>
 
                     <Label text="enter span here:" />
-                <TextField fx:id="Engine_power_HPInput"
+                <TextField fx:id="K_turnInput"
                     promptText="Enter reference wing in meters"
                     style="-fx-prompt-text-fill: gray;"/>
 
                     <Label text="enter span here:" />
-                <TextField fx:id="Engine_power_HPInput"
+                <TextField fx:id="velocity_accelInput"
                     promptText="Enter reference wing in meters"
                     style="-fx-prompt-text-fill: gray;"/>
 
                     <Label text="enter span here:" />
-                <TextField fx:id="Engine_power_HPInput"
+                <TextField fx:id="accel_horizInput"
                     promptText="Enter reference wing in meters"
                     style="-fx-prompt-text-fill: gray;"/>
 
                     <Label text="enter span here:" />
-                <TextField fx:id="Engine_power_HPInput"
+                <TextField fx:id="altitude_horiz_accelInput"
                     promptText="Enter reference wing in meters"
                     style="-fx-prompt-text-fill: gray;"/>
 
                     <Label text="enter span here:" />
-                <TextField fx:id="Engine_power_HPInput"
+                <TextField fx:id="velocity_approachInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+                   
+                    <Label text="enter span here:" />
+                <TextField fx:id="K_approachInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+                   
+                    <Label text="enter span here:" />
+                <TextField fx:id="C_Lmax_approachInput"
+                    promptText="Enter reference wing in meters"
+                    style="-fx-prompt-text-fill: gray;"/>
+                    
+                    <Label text="enter span here:" />
+                <TextField fx:id="altitude_approachInput"
                     promptText="Enter reference wing in meters"
                     style="-fx-prompt-text-fill: gray;"/>
 

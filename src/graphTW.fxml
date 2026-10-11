@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" 
+            xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.kriston.test1.graphTWController">
+    <children>
+        <LineChart fx:id="lineChart" title="Constraints: T/W vs Wing Loading" layoutX="14.0" layoutY="14.0" prefHeight="370.0" prefWidth="570.0">
+            <xAxis>
+                <CategoryAxis fx:id="xAxis" label="Wing Loading (N/m^2)" />
+            </xAxis>
+            <yAxis>
+                <!-- NumberAxis is used for numerical values -->
+                <NumberAxis fx:id="yAxis" label="Thrust to Weight Ratio (T/W)" />
+            </yAxis>
+        </LineChart>
+    </children>
+</AnchorPane>

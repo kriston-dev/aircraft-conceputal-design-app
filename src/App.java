@@ -39,4 +39,45 @@ public class App extends Application {
         launch();
     }
 
+    public static void changeState(Aircraft_constraint_states newState)
+            throws IOException {
+
+        currState = newState;
+
+        switch (currState) {
+
+            case MAIN_MENU:
+                System.out.println("entering main menu from app");
+                master.main(Aircraft_constraint_states.MAIN_MENU);
+                setRoot("mainMenu");
+                break;
+
+            case GET_TW_AIRCRAFT_DATA:
+                System.out.println("entering getting data from app");
+                master.main(Aircraft_constraint_states.GET_TW_AIRCRAFT_DATA);
+                setRoot("get_tw_data_disp");
+                break;
+
+            case SAVED_TW_AIRCRAFT_DATA:
+                System.out.println("entering saved files TW from app");
+                master.main(Aircraft_constraint_states.SAVED_TW_AIRCRAFT_DATA);
+                setRoot("saved_tw_data_disp");
+                break;
+
+            case CALCULATE_TW:
+                System.out.println("entering calculation from app");
+                master.main(Aircraft_constraint_states.CALCULATE_TW);
+                changeState(Aircraft_constraint_states.GRAPH_TW);
+
+            case GRAPH_TW:
+                System.out.println("entering graph TW from app");
+                setRoot("graphTW");
+                break;
+
+            default:
+                System.out.println("State not added in the app.java file: " + currState);
+                break;
+        }
+    }
+
 }
