@@ -10,7 +10,6 @@ public class mainMenuController {
 
     @FXML
     private void getTW() throws IOException {
-        App.currState = Aircraft_constraint_states.GET_TW_AIRCRAFT_DATA;
-        App.setRoot("get_tw_data_disp");
+        App.changeState(Aircraft_constraint_states.GET_TW_AIRCRAFT_DATA);
     }
 }

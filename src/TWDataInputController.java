@@ -97,7 +97,8 @@ public class TWDataInputController {
             user_aircraft_TW_input.S_G = Double.parseDouble(S_GInput.getText());
 
             user_aircraft_TW_input.K_TO = Double.parseDouble(K_TOInput.getText());
-            user_aircraft_TW_input.Rolling_friction_coefficient = Double.parseDouble(Rolling_friction_coefficientInput.getText());
+            user_aircraft_TW_input.Rolling_friction_coefficient = Double
+                    .parseDouble(Rolling_friction_coefficientInput.getText());
 
             user_aircraft_TW_input.Propeller_efficiency_TO = Double.parseDouble(Propeller_efficiency_TOInput.getText());
             user_aircraft_TW_input.altitude_TO = Double.parseDouble(altitude_TOInput.getText());
